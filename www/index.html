@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SW</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="js/jqm/jquery.mobile-1.4.5.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div data-role="page" id="login">
+
+        <div data-role="header" data-position="fixed">
+            <h1>SocioWeather</h1>
+        </div>
+
+        <div data-role="content" style="text-align:center;">
+            <img src="img/social.png" width="70%" height="70%" />
+            <button data-role="button" onclick="login()">Login with Facebook</button>
+            <button data-role="button" onclick="exitApp()">No, Thanks</button>
+        </div>
+
+
+    </div>
+
+<!--cordova.js is automatically injected by the Cordova build process-->
+<script src="cordova.js"></script>
+
+<script src="js/openfb.js"></script>
+
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/jqm/jquery.mobile-1.4.5.min.js"></script>
+<script src="js/loader.js"></script>
+
+
+<script>
+
+     // Defaults to sessionStorage for storing the Facebook token
+     //openFB.init({appId: '1449198478707679'});
+
+    //  Uncomment the line below to store the Facebook token in localStorage instead of sessionStorage
+      openFB.init({appId: '1449198478707679', tokenStore: window.localStorage});
+
+    function exitApp() {
+
+        navigator.app.exitApp();
+    }
+
+    function login() {
+
+      //showLoader();
+
+        openFB.login(
+            function(response) {
+                if(response.status === 'connected') {
+                    //alert('Facebook login succeeded, got access token: ' + response.authResponse.token);
+                    getInfo();
+                    //window.location = "main.html";
+                } else {
+                    alert('Facebook login failed: ' + response.error);
+                }
+            }, {scope: 'email,read_stream,publish_stream'});
+
+    }
+
+    function getInfo() {
+
+      showLoader();
+
+        openFB.api({
+            path: '/me',
+            success: function(data) {
+
+              hideLoader();
+
+                window.localStorage.setItem("fbuid", data.id);
+                window.localStorage.setItem("fbname", data.name);
+                window.localStorage.setItem("fbemail", data.email);
+
+                hideLoader();
+
+                window.location = "main.html";
+
+            },
+            error: errorHandler});
+    }
+
+    function share() {
+        openFB.api({
+            method: 'POST',
+            path: '/me/feed',
+            params: {
+                message: document.getElementById('Message').value || 'Testing Facebook APIs'
+            },
+            success: function() {
+                alert('the item was posted on Facebook');
+            },
+            error: errorHandler});
+    }
+
+    function revoke() {
+        openFB.revokePermissions(
+                function() {
+                    alert('Permissions revoked');
+                },
+                errorHandler);
+    }
+
+    function logout() {
+        openFB.logout(
+                function() {
+                    //alert('Logout successful');
+                },
+                errorHandler);
+    }
+
+    function errorHandler(error) {
+        alert(error.message);
+    }
+
+</script>
+</body>
+</html>

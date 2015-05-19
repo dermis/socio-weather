@@ -1,0 +1,28 @@
+jsonpcallback(
+[
+  {
+    "fbuid" : "157851205951",
+    "fbname" : "Najib Razak",
+    "lat" : "3.491788",
+    "lon" : "103.386778"
+  },
+  {
+    "fbuid" : "12411993651",
+    "fbname" : "Dr. Mahathir bin Mohamad",
+    "lat" : "6.386904",
+    "lon" : "99.789519"
+  },
+  {
+    "fbuid" : "1348121540",
+    "fbname" : "Shahrizan Md Rajak",
+    "lat" : "4.595494",
+    "lon" : "101.092619"
+  },
+  {
+    "fbuid" : "1508041658",
+    "fbname" : "Azman Mohd Farok",
+    "lat" : "5.420071",
+    "lon" : "100.332451"
+  }
+]
+)

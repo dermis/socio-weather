@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SW</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/jquery-2.1.4.min.js"></script>
+
+    <script type="text/javascript">
+
+          $.ajax({
+            //JSONP API
+            url: "http://mhafizhasan.com/socio-weather/sociodata.json?callback=jsonpcallback",
+            //the name of the callback function
+            jsonp: "jsonpcallback",
+            //tell jQuery to expect JSONP
+            dataType: "jsonp",
+            //work with the response
+            success: function(data) {
+              //console.log(data); //formatted JSON data
+            }
+          });
+
+          //callback function
+          function jsonpcallback(data) {
+              //do stuff with JSON
+              //console.log(data);
+              $.each(data, function(k, v) {
+                console.log(v.fbname);
+
+                // append list of data
+                var currWeatherGpsJson = "http://api.openweathermap.org/data/2.5/weather?lat=" + v.lat + "&lon=" + v.lon + "&units=metric";
+
+                $.getJSON(currWeatherGpsJson, function(currentWeatherGPS) {
+
+                    // get temperature
+                    var tempCelciusGPSRaw = currentWeatherGPS.main.temp;
+                    var tempCelciusGPS = tempCelciusGPSRaw.toFixed(2) + " &#8451;";
+
+                    // get place name based on coordinate
+                    var placeGPS = currentWeatherGPS.name;
+
+                    //Get icon code and append to url to retrieve weather icon
+                    $.each(currentWeatherGPS.weather, function (key, value) {
+                        var iconURLCodeGPS = value.icon;
+                        currIconURLGPS = "http://openweathermap.org/img/w/" + iconURLCodeGPS + ".png";
+                        //console.log("iconURLCodeGPS: " + value.icon);
+                    });
+
+                    // reconstruct list order for each data from server
+                    // var sociohtml = "<li data-role='fieldcontain'><h1>"
+                    //     + v.fbname + "</h1><h2>" + placeGPS + "</h2><h3>"
+                    //     + "<img src='" + currIconURLGPS + "' alt='weather icon'/>"
+                    //     + "</h3><h3> " + tempCelciusGPS + "</h3></li>";
+
+                      //document.getElementById('sociolist').innerHTML = sociohtml;
+                      //$(sociohtml).appendTo("#sociolist");
+
+                    var sociohtml = "<hr><h4>" + "<img src='https://graph.facebook.com/" + v.fbuid + "/picture?type=small'/> "
+                        + v.fbname + "</h4><p>" + placeGPS + "<br/>"
+                        + "<img src='" + currIconURLGPS + "' alt='weather icon'/>"
+                        + "<br/>" + tempCelciusGPS + "</p>";
+
+                    //document.getElementById('sociolist').innerHTML = sociohtml;
+                    $(sociohtml).appendTo("#sociolist");
+
+                });
+
+              });
+          }
+
+
+    </script>
+</head>
+<body>
+    <div data-role="page" id="main" data-title="Main">
+
+        <div data-role="header" data-position="fixed">
+            <h1>SocioWeather</h1>
+            <button data-role="button" onclick="logout()" data-icon="power" class="ui-btn-right">Logout</button>
+        </div>
+
+        <div data-role="content">
+
+            <ul data-role="listview" data-inset="true">
+
+                <li data-role="fieldcontain">
+                    <h1 name="fbnama" id="fbnama"></h1>
+
+                    <h2 id="wName"></h2>
+                    <h3 id="wIcon"></h3>
+                    <h3 id="wTemp"></h3>
+
+                </li>
+            </ul>
+
+            <!--
+            <ul data-role="listview" data-inset="true" id="sociolist">
+            </ul>
+            -->
+
+            <div id="sociolist"></div>
+
+        </div>
+
+        <!--
+        <div data-role="footer" data-position="fixed">
+            <h4>2015</h4>
+        </div>
+        -->
+
+    </div>
+
+<!--cordova.js is automatically injected by the Cordova build process-->
+<script src="cordova.js"></script>
+<script src="js/openfb.js"></script>
+<!-- <script src="js/jquery-2.1.4.min.js"></script> -->
+<script src="js/jquery.mobile-1.4.5.min.js"></script>
+
+
+<script>
+
+    // Wait for device API libraries to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+    // device APIs are available
+    //
+    function onDeviceReady() {
+
+        //getInfo();
+        navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+        var fbuid = window.localStorage.getItem("fbuid");
+        var fbname = window.localStorage.getItem("fbname");
+        var fbemail = window.localStorage.getItem("fbemail");
+
+        document.getElementById("fbnama").innerHTML = '<img src="https://graph.facebook.com/' + fbuid + '/picture?type=normal" /> ' + fbname;
+
+        // get dummy json type data
+        $.getJSON("http://mhafizhasan.com/socio-weather/sociodata.json", function(result){
+        $.each(result, function(i, field){
+            //$("div").append(field + " ");
+            //alert(field.fbname);
+        });
+    });
+
+    }
+
+
+    // onSuccess Geolocation
+    //
+    function onSuccess(position) {
+
+        var currWeatherGpsJson = "http://api.openweathermap.org/data/2.5/weather?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=metric";
+
+        $.getJSON(currWeatherGpsJson, function(currentWeatherGPS) {
+            var tempCelciusGPSRaw = currentWeatherGPS.main.temp;
+            var tempCelciusGPS = tempCelciusGPSRaw.toFixed(2) + " &#8451;";
+            document.getElementById("wTemp").innerHTML = tempCelciusGPS;
+
+            var placeGPS = currentWeatherGPS.name;
+            document.getElementById("wName").innerHTML = placeGPS;
+
+            //Get icon code and append to url to retrieve weather icon
+            $.each(currentWeatherGPS.weather, function (key, value) {
+                var iconURLCodeGPS = value.icon;
+                currIconURLGPS = "http://openweathermap.org/img/w/" + iconURLCodeGPS + ".png";
+                //console.log("iconURLCodeGPS: " + value.icon);
+            });
+
+        //Insert current weather image icon to page
+        document.getElementById("wIcon").innerHTML = "<img src='" + currIconURLGPS + "' alt='weather icon'/>";
+
+        });
+    }
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
+    }
+
+    function logout() {
+        openFB.logout(
+                function() {
+                    alert('Logout successful');
+                },
+                errorHandler);
+
+        window.location = "index.html";
+    }
+
+    function errorHandler(error) {
+        alert(error.message);
+    }
+
+</script>
+</body>
+</html>
