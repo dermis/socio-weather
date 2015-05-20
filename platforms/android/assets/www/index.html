@@ -4,37 +4,35 @@
     <meta charset="utf-8">
     <title>SW</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css">
+    <link rel="stylesheet" href="js/jqm/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" href="js/jqm/jquery.mobile.theme-1.4.5.min.css">
     <link rel="stylesheet" href="css/styles.css">
+
+    <!--cordova.js is automatically injected by the Cordova build process-->
+    <script src="cordova.js"></script>
+    <!--
+    <script src="cordova.js"></script> -->
+    <script src="js/openfb.js"></script>
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/jqm/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/loader.js"></script>
 </head>
 <body>
+
     <div data-role="page" id="login">
 
-        <div data-role="header" data-position="fixed">
+        <div data-role="header" data-position="fixed" data-theme="b">
             <h1>SocioWeather</h1>
         </div>
 
-        <div data-role="content">
-            <button data-role="button" data-inline="true" onclick="login()">Login with Facebook</button>
-            <button data-role="button" data-inline="true" onclick="exitApp()">No, Thanks</button>
+        <div data-role="content" style="text-align:center;">
+            <img src="img/social.png" width="70%" height="70%" />
+            <button data-role="button" onclick="login()">Login with Facebook</button>
+            <button data-role="button" onclick="exitApp()">No, Thanks</button>
         </div>
 
-        <!--
-        <div data-role="footer">
-            <h4>2015</h4>
-        </div>
-        -->
 
     </div>
-
-<!--cordova.js is automatically injected by the Cordova build process-->
-<script src="cordova.js"></script>
-
-<script src="js/openfb.js"></script>
-
-<script src="js/jquery-2.1.4.min.js"></script>
-<script src="js/jquery.mobile-1.4.5.min.js"></script>
-
 
 <script>
 
@@ -51,6 +49,8 @@
 
     function login() {
 
+      //showLoader();
+
         openFB.login(
             function(response) {
                 if(response.status === 'connected') {
@@ -65,22 +65,20 @@
     }
 
     function getInfo() {
-        // openFB.api({
-        //     path: '/me',
-        //     success: function(data) {
-        //         console.log(JSON.stringify(data));
-        //         document.getElementById("userName").innerHTML = data.name;
-        //         document.getElementById("userPic").src = 'http://graph.facebook.com/' + data.id + '/picture?type=small';
-        //     },
-        //     error: errorHandler});
+
+      showLoader();
 
         openFB.api({
             path: '/me',
             success: function(data) {
 
+              hideLoader();
+
                 window.localStorage.setItem("fbuid", data.id);
                 window.localStorage.setItem("fbname", data.name);
                 window.localStorage.setItem("fbemail", data.email);
+
+                hideLoader();
 
                 window.location = "main.html";
 

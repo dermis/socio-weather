@@ -4,13 +4,24 @@
     <meta charset="utf-8">
     <title>SW</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-    <link rel="stylesheet" href="js/jqm/jquery.mobile-1.4.5.css">
+    <link rel="stylesheet" href="js/jqm/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" href="js/jqm/jquery.mobile.theme-1.4.5.min.css">
     <link rel="stylesheet" href="css/styles.css">
+
+    <!--cordova.js is automatically injected by the Cordova build process-->
+    <script src="cordova.js"></script>
+    <!--
+    <script src="cordova.js"></script> -->
+    <script src="js/openfb.js"></script>
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/jqm/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/loader.js"></script>
 </head>
 <body>
+
     <div data-role="page" id="login">
 
-        <div data-role="header" data-position="fixed">
+        <div data-role="header" data-position="fixed" data-theme="b">
             <h1>SocioWeather</h1>
         </div>
 
@@ -22,16 +33,6 @@
 
 
     </div>
-
-<!--cordova.js is automatically injected by the Cordova build process-->
-<script src="cordova.js"></script>
-
-<script src="js/openfb.js"></script>
-
-<script src="js/jquery-2.1.4.min.js"></script>
-<script src="js/jqm/jquery.mobile-1.4.5.min.js"></script>
-<script src="js/loader.js"></script>
-
 
 <script>
 
