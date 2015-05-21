@@ -39,9 +39,10 @@
                     <h3 id="feelingdb"></h3>
                     <p>
                       <input type="text" data-clear-btn="true" name="feeling" id="feeling">
-                      <button data-role="button" id="btnSave" data-role="button" data-inline="true">Save</button>
-                      <!-- <button data-role="button" id="btnShow" data-role="button" data-inline="true">Show</button> -->
+                      <button data-role="button" id="btnSave" data-role="button" data-inline="true">Update</button>
+                      <!-- <button data-role="button" id="btnShow" data-role="button" data-inline="true">Show</button>
                       <button data-role="button" id="btnClear" data-role="button" data-inline="true">Clear</button>
+                      -->
                     </p>
                 </li>
             </ul>
@@ -55,6 +56,14 @@
 
 
 <script type="text/javascript">
+
+    var feeling = window.localStorage.getItem("feeling");
+    if(feeling != null) {
+      if(feeling.length > 0) {
+              $('#feelingdb').append(feeling);
+      }
+    }
+
 
     $(function () {
           $('#btnSave').click(function() {
@@ -72,7 +81,8 @@
           });
 
           $('#btnClear').click(function() {
-                  var clear = window.localStorage.removeItem('feeling');
+                  alert('qqqqqqq');
+                  var clear = window.localStorage.clear();
                   $('#feelingdb').append('');
           });
 
